@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <!--nombre único de la unidad de persistencia-->
+    <persistence-unit name="ejemplopersistenciaJPA">   
+        <description>
+            Ejemplo de unidad de persistencia para Jakarta Persistence
+        </description>
+                <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<!--        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>-->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <!-- Clases que se van a persistir -->
+       <class>es.tubalcain.domain.Alumno</class>     
+
+        <!-- Propiedades de la unidad de persistencia -->
+        <properties>    
+            <!-- Configuración de conexión a base de datos MySQL -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/gestion_alumnos?serverTimezone=UTC"/>
+            <property name="jakarta.persistence.jdbc.user" value="root" />
+            <property name="jakarta.persistence.jdbc.password" value="root" />
+            <!-- crete: automáticamente, genera el esquema de la base de datos.
+                none: no hace nada (la base de datos debe existir)
+                create: crea las tablas (si no existen)
+                drop-and-create: borra las tablas y las vuelve a crear.
+                drop: borra las tablas cuando se cierra la factoría de persistencia, pero no las vuelve a crear. 
+             -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="create" /> <!-- none, create, drop-and-create, drop  -->
+
+            <!-- Muestra por pantalla las sentencias SQL -->
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.highlight_sql" value="true" />
+            <property name="hibernate.globally_quoted_identifiers" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+       </properties>
+
+    </persistence-unit>
+
+</persistence>
