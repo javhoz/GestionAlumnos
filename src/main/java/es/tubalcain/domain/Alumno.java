@@ -55,6 +55,27 @@ public class Alumno {
     @JoinColumn(name = "curso_id") // clave foránea en la tabla Alumno
     private Curso curso;
 
+    @ManyToMany
+    @JoinTable(
+        name = "alumno_modulo",
+        joinColumns = @JoinColumn(name = "alumno_id"),
+        inverseJoinColumns = @JoinColumn(name = "modulo_id")
+    )
+    private Set<Modulo> modulos = new HashSet<>();
+
+    public Set<Modulo> getModulos() { return modulos; }
+    public void setModulos(Set<Modulo> modulos) { this.modulos = modulos; }
+
+    public void addModulo(Modulo modulo) {
+        modulos.add(modulo);
+        modulo.getAlumnos().add(this);
+    }
+
+    public void removeModulo(Modulo modulo) {
+        modulos.remove(modulo);
+        modulo.getAlumnos().remove(this);
+    }
+
     public Alumno() {}
 
     public Alumno(String nombre, String apellidos, String dni) {
