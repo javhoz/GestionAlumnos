@@ -5,7 +5,7 @@
              version="3.0">
 
     <!-- Nombre único de la unidad de persistencia -->
-    <persistence-unit name="ejemplopersistenciaJPA">
+    <persistence-unit name="gestionAlumnos">
         <description>
             Ejemplo de unidad de persistencia para Jakarta Persistence
         </description>

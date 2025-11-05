@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Iniciando la aplicación de Gestión de Alumnos...");
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ejemplopersistenciaJPA");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("gestionAlumnos");
         EntityManager em = emf.createEntityManager();
 
         try {
