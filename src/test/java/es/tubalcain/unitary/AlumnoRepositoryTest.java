@@ -1,4 +1,4 @@
-package es.tubalcain.repository;
+package es.tubalcain.unitary;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import es.tubalcain.domain.Alumno;
+import es.tubalcain.repository.AlumnoRepository;
 
 class AlumnoRepositoryTest {
     

@@ -1,6 +1,7 @@
 package es.tubalcain.app;
 
 import java.time.LocalDate;
+
 import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.Curso;
 import es.tubalcain.domain.Modulo;
@@ -12,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Iniciando la aplicación de Gestión de Alumnos...");
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("gestionAlumnos");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("gestionAlumnosPersistenceUnit");
         EntityManager em = emf.createEntityManager();
 
         try {
