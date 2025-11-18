@@ -49,6 +49,19 @@ public class AlumnoRepository { // En Spring será una interface heredando de JP
         return Optional.ofNullable(em.find(Alumno.class, id));
     }
 
+    /**
+     * Busca un alumno por ID y carga también su `curso` asociado en la misma consulta.
+     * Usa `JOIN FETCH` para evitar LazyInitializationException fuera de la transacción
+     * y para curarnos en salud del problema N+1 si vamos a necesitar el curso inmediatamente.
+     */
+    public Optional<Alumno> findByIdWithCurso(Long id) {
+        TypedQuery<Alumno> query = em.createQuery(
+                "SELECT a FROM Alumno a LEFT JOIN FETCH a.curso WHERE a.id = :id",
+                Alumno.class);
+        query.setParameter("id", id);
+        return query.getResultStream().findFirst();
+    }
+
     /** Busca un alumno por DNI */
     public Optional<Alumno> findByDni(String dni) {
         TypedQuery<Alumno> query = em.createQuery("SELECT a FROM Alumno a WHERE a.dni = :dni", Alumno.class);
