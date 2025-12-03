@@ -1,55 +1,21 @@
-package es.tubalcain.app;
+package es.tubalcain.main;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.Curso;
 import es.tubalcain.domain.Modulo;
-import es.tubalcain.repository.AlumnoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-/**
- * Ejemplo de inyección de dependencias manual.
- * La clase AppGestor recibe sus dependencias (repositorios y EntityManager)
- * a través del constructor, no las crea internamente.
- */
 public class Main {
-
     public static void main(String[] args) {
         System.out.println("Iniciando la aplicación de Gestión de Alumnos...");
 
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("gestionAlumnosPersistenceUnit");
         EntityManager em = emf.createEntityManager();
 
-        // Inyección manual de dependencias
-        AlumnoRepository alumnoRepo = new AlumnoRepository(em);
-        AppGestor gestor = new AppGestor(alumnoRepo, em);
-
-        gestor.ejecutar();
-
-        em.close();
-        emf.close();
-    }
-}
-
-/**
- * Clase de servicio que depende de AlumnoRepository y EntityManager,
- * inyectados mediante el constructor.
- */
-class AppGestor {
-
-    private final AlumnoRepository alumnoRepo;
-    private final EntityManager em;
-
-    public AppGestor(AlumnoRepository alumnoRepo, EntityManager em) {
-        this.alumnoRepo = alumnoRepo;
-        this.em = em;
-    }
-
-    public void ejecutar() {
         try {
             em.getTransaction().begin();
 
@@ -81,20 +47,27 @@ class AppGestor {
             a1.addModulo(sistemas);
             a2.addModulo(redes);
 
-            // Persistir usando el repositorio
-            alumnoRepo.save(a1);
-            alumnoRepo.save(a2);
+            // Persistir curso (en cascada) y módulos
+            em.persist(curso1);
+            em.persist(redes);
+            em.persist(sistemas);
 
             em.getTransaction().commit();
 
-            // Consultas
-            List<Alumno> activos = alumnoRepo.findActivos();
-            System.out.println("\n--- Alumnos activos ---");
-            activos.forEach(a -> System.out.println(a.getNombre() + " " + a.getApellidos()));
+            // Mostrar relaciones
+            System.out.println("\nMódulos de " + a1.getNombre() + ":");
+            a1.getModulos().forEach(m -> System.out.println("- " + m.getNombre()));
+
+            System.out.println("\nAlumnos matriculados en " + redes.getNombre() + ":");
+            redes.getAlumnos().forEach(a -> System.out.println("- " + a.getNombre()));
 
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            em.close();
+            emf.close();
+            System.out.println("\nAplicación finalizada.");
         }
     }
 }

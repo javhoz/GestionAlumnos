@@ -5,7 +5,7 @@
              version="3.0">
 
     <!-- Nombre único de la unidad de persistencia -->
-    <persistence-unit name="ejemplopersistenciaJPA">
+    <persistence-unit name="gestionAlumnosPersistenceUnit">
         <description>
             Ejemplo de unidad de persistencia para Jakarta Persistence
         </description>
@@ -15,6 +15,8 @@
 
         <!-- Clases que se van a persistir -->
         <class>es.tubalcain.domain.Alumno</class>
+        <class>es.tubalcain.domain.Curso</class>
+        <class>es.tubalcain.domain.Modulo</class>
 
         <!-- Si no se listan todas las clases, incluir también las detectadas automáticamente -->
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
@@ -28,7 +30,7 @@
             <property name="jakarta.persistence.jdbc.password" value="root"/>
 
             <!-- Generación del esquema -->
-            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
 
             <!-- Configuración de Hibernate -->
             <property name="hibernate.show_sql" value="true"/>

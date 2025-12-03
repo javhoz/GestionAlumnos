@@ -1,20 +1,25 @@
-package es.tubalcain.app;
+package es.tubalcain.main;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.Curso;
 import es.tubalcain.domain.Modulo;
+import es.tubalcain.repository.AlumnoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-public class Main {
+public class MainWithRepository {
     public static void main(String[] args) {
         System.out.println("Iniciando la aplicación de Gestión de Alumnos...");
 
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("gestionAlumnosPersistenceUnit");
         EntityManager em = emf.createEntityManager();
+
+        // Instanciamos el repositorio
+        AlumnoRepository alumnoRepo = new AlumnoRepository(em);
 
         try {
             em.getTransaction().begin();
@@ -47,14 +52,33 @@ public class Main {
             a1.addModulo(sistemas);
             a2.addModulo(redes);
 
-            // Persistir curso (en cascada) y módulos
-            em.persist(curso1);
-            em.persist(redes);
-            em.persist(sistemas);
+            // Guardar alumnos usando el repositorio
+            alumnoRepo.save(a1);
+            alumnoRepo.save(a2);
 
             em.getTransaction().commit();
 
-            // Mostrar relaciones
+            // ----------- CONSULTAS USANDO EL REPOSITORIO ----------------
+
+            System.out.println("\n--- Listado de alumnos activos ---");
+            List<Alumno> activos = alumnoRepo.findActivos();
+            activos.forEach(a -> System.out.println(a.getNombre() + " " + a.getApellidos()));
+
+            System.out.println("\n--- Buscar por DNI '12345678A' ---");
+            alumnoRepo.findByDni("12345678A")
+                      .ifPresentOrElse(
+                          a -> System.out.println("Encontrado: " + a.getNombre() + " (" + a.getNumeroExpediente() + ")"),
+                          () -> System.out.println("No se encontró el alumno.")
+                      );
+
+            System.out.println("\n--- Buscar por nombre parcial 'José' ---");
+            alumnoRepo.findByNombreCompleto("José").forEach(a -> 
+                System.out.println("Coincidencia: " + a.getNombre() + " " + a.getApellidos())
+            );
+
+            System.out.println("\n--- Total de alumnos: " + alumnoRepo.countAll() + " ---");
+
+            // Mostrar relaciones (solo para comprobación visual)
             System.out.println("\nMódulos de " + a1.getNombre() + ":");
             a1.getModulos().forEach(m -> System.out.println("- " + m.getNombre()));
 
