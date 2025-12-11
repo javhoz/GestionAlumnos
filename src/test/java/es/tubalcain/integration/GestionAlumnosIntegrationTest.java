@@ -61,13 +61,13 @@ public class GestionAlumnosIntegrationTest {
         em.persist(baseDatos);
 
         // 3. Crear alumnos y asignarlos al curso
-        Alumno alumno1 = new Alumno("Dan", "Smith", "11122233A");
+        Alumno alumno1 = new Alumno("Dan", "Smith", "11122233A", "k7@ejemplo.com");
         alumno1.setFechaNacimiento(LocalDate.of(1999, 3, 15));
         alumno1.setEmail("k7@ejemplo.com");
         alumno1.setNumeroExpediente("EXP2025-001");
         curso.addAlumno(alumno1);
 
-        Alumno alumno2 = new Alumno("Sumio", "Kodai", "44455566B");
+        Alumno alumno2 = new Alumno("Sumio", "Kodai", "44455566B", "hcu1@24thward.com");
         alumno2.setFechaNacimiento(LocalDate.of(1999, 7, 22));
         alumno2.setEmail("hcu1@24thward.com");
         alumno2.setNumeroExpediente("EXP2025-002");
@@ -144,7 +144,7 @@ public class GestionAlumnosIntegrationTest {
         // Crear estructura completa
         Curso curso = new Curso("2º D.A.M.", "Segundo curso de DAM");
         Modulo modulo = new Modulo("Acceso a Datos", "Persistencia y bases de datos");
-        Alumno alumno = new Alumno("Vivi", "Ornitier", "77788899C");
+        Alumno alumno = new Alumno("Vivi", "Ornitier", "77788899C", "ffix@gmail.com");
         
         curso.addAlumno(alumno);
         alumno.addModulo(modulo);
@@ -177,8 +177,8 @@ public class GestionAlumnosIntegrationTest {
         
         try {
             // Intentar crear un alumno con DNI duplicado
-            Alumno alumno1 = new Alumno("Repetido1", "Test", "99999999X");
-            Alumno alumno2 = new Alumno("Repetido2", "Test", "99999999X"); // Mismo DNI
+            Alumno alumno1 = new Alumno("Repetido1", "Test", "99999999X", "repe@gmail.com");
+            Alumno alumno2 = new Alumno("Repetido2", "Test", "99999999X", "repe@gmail.com"); // Mismo DNI
             
             curso.addAlumno(alumno1);
             curso.addAlumno(alumno2);

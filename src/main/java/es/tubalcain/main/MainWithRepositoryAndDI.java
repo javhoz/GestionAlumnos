@@ -64,17 +64,18 @@ class AppGestor {
             em.persist(sistemas);
 
             // Crear alumnos
-            Alumno a1 = new Alumno("Juan", "Muñíz", "12345678A");
+            Alumno a1 = new Alumno("Juan", "Muñíz", "12345678A", "juancho@gmail.com");
             a1.setFechaNacimiento(LocalDate.of(2000, 1, 15));
             a1.setEmail("juan@example.com");
             a1.setNumeroExpediente("EXP001");
             curso1.addAlumno(a1);
 
-            Alumno a2 = new Alumno("José Alberto", "López García", "87654321B");
+            Alumno a2 = new Alumno("José Alberto", "López García", "87654321B", "jal@gmail.com");
             a2.setFechaNacimiento(LocalDate.of(1972, 5, 20));
             a2.setEmail("jose@example.com");
             a2.setNumeroExpediente("EXP002");
             curso1.addAlumno(a2);
+
 
             // Asignar módulos a los alumnos (ManyToMany)
             a1.addModulo(redes);

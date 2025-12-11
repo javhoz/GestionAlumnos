@@ -1,12 +1,16 @@
 package es.tubalcain.controller;
 
+import es.tubalcain.assembler.AlumnoAssembler;
+import es.tubalcain.dto.AlumnoDTO;
 import es.tubalcain.domain.Alumno;
 import es.tubalcain.service.AlumnoService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/alumnos")
@@ -14,39 +18,69 @@ import java.util.List;
 public class AlumnoController {
 
     private final AlumnoService alumnoService;
+    private final AlumnoAssembler alumnoAssembler;
 
-    public AlumnoController(AlumnoService alumnoService) {
+    public AlumnoController(AlumnoService alumnoService, AlumnoAssembler alumnoAssembler) {
         this.alumnoService = alumnoService;
+        this.alumnoAssembler = alumnoAssembler;
     }
 
     // CREAR
     @PostMapping
-    public Alumno crear(@RequestBody Alumno alumno) {
-        return alumnoService.crearAlumno(alumno);
+    public AlumnoDTO crear(@RequestBody AlumnoDTO alumnoDto) {
+
+//        Curso curso = alumnoService.buscarCursoPorId(alumnoDto.getCursoId());
+//
+//        Set<Modulo> modulos = alumnoService.buscarModulosPorIds(
+//                alumnoDto.getModuloIds()
+//        );
+
+        Alumno alumno = alumnoAssembler.toEntity(alumnoDto);
+        Alumno persistedAlumno = alumnoService.crearAlumno(alumno);
+
+        return alumnoAssembler.toDTO(persistedAlumno);
     }
 
     // LISTAR TODOS
     @GetMapping
-    public List<Alumno> listar() {
-        return alumnoService.listarTodos();
+    public List<AlumnoDTO> listar() {
+        return alumnoService.listarTodos()
+                .stream()
+                .map(alumnoAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 
     // LISTAR PAGINADO
     @GetMapping("/paginado")
-    public Page<Alumno> listarPaginado(Pageable pageable) {
-        return alumnoService.listarPaginado(pageable);
+    public Page<AlumnoDTO> listarPaginado(Pageable pageable) {
+        return alumnoService.listarPaginado(pageable)
+                .map(alumnoAssembler::toDTO);
     }
 
     // BUSCAR POR ID
     @GetMapping("/{id}")
-    public Alumno buscarPorId(@PathVariable Long id) {
-        return alumnoService.buscarPorId(id);
+    public AlumnoDTO buscarPorId(@PathVariable Long id) {
+        Alumno alumno = alumnoService.buscarPorId(id);
+        return alumnoAssembler.toDTO(alumno);
     }
 
     // ACTUALIZAR
     @PutMapping("/{id}")
-    public Alumno actualizar(@PathVariable Long id, @RequestBody Alumno alumno) {
-        return alumnoService.actualizarAlumno(id, alumno);
+    public AlumnoDTO actualizar(@PathVariable Long id, @RequestBody AlumnoDTO dto) {
+
+        Alumno alumnoExistente = alumnoService.buscarPorId(id);
+
+//        Curso curso = alumnoService.buscarCursoPorId(dto.getCursoId());
+//
+//        Set<Modulo> modulos = alumnoService.buscarModulosPorIds(
+//                dto.getModuloIds()
+//        );
+//
+//        alumnoAssembler.updateEntity(dto, alumnoExistente, curso, modulos);
+
+        Alumno actualizado = alumnoService.actualizarAlumno(id, alumnoExistente);
+
+        return alumnoAssembler.toDTO(actualizado);
     }
 
     // BORRADO REAL
@@ -55,7 +89,7 @@ public class AlumnoController {
         alumnoService.eliminarAlumno(id);
     }
 
-    // BORRADO LÓGICO (DESACTIVAR, tengo que explicar el version lock)
+    // BORRADO LÓGICO
     @PutMapping("/desactivar/{id}")
     public void desactivar(@PathVariable Long id) {
         alumnoService.desactivarAlumno(id);
@@ -63,19 +97,28 @@ public class AlumnoController {
 
     // BUSCAR POR NOMBRE
     @GetMapping("/buscar/nombre/{nombre}")
-    public List<Alumno> buscarPorNombre(@PathVariable String nombre) {
-        return alumnoService.buscarPorNombre(nombre);
+    public List<AlumnoDTO> buscarPorNombre(@PathVariable String nombre) {
+        return alumnoService.buscarPorNombre(nombre)
+                .stream()
+                .map(alumnoAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 
     // BUSCAR POR APELLIDOS
     @GetMapping("/buscar/apellidos/{apellidos}")
-    public List<Alumno> buscarPorApellidos(@PathVariable String apellidos) {
-        return alumnoService.buscarPorApellidos(apellidos);
+    public List<AlumnoDTO> buscarPorApellidos(@PathVariable String apellidos) {
+        return alumnoService.buscarPorApellidos(apellidos)
+                .stream()
+                .map(alumnoAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 
     // LISTAR SOLO ACTIVOS
     @GetMapping("/activos")
-    public List<Alumno> listarActivos() {
-        return alumnoService.listarActivos();
+    public List<AlumnoDTO> listarActivos() {
+        return alumnoService.listarActivos()
+                .stream()
+                .map(alumnoAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,6 @@
 package es.tubalcain.service;
 
 import es.tubalcain.domain.Alumno;
-import es.tubalcain.repository.AlumnoRepository;
 import es.tubalcain.repository.AlumnoSpringRepository;
 
 import org.springframework.data.domain.Page;
@@ -26,7 +25,6 @@ public class AlumnoService {
         alumnoRepository.findByDni(alumno.getDni()).ifPresent(a -> {
             throw new RuntimeException("Ya existe un alumno con ese DNI");
         });
-
         return alumnoRepository.save(alumno);
     }
 

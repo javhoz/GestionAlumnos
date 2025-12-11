@@ -2,7 +2,6 @@ package es.tubalcain.unitary;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +31,7 @@ class AlumnoRepositoryTest {
     @Test
     void testSaveAlumno() {
         // Given
-        Alumno alumno = new Alumno("Iñigo", "Vicente", "12345678A");
+        Alumno alumno = new Alumno("Iñigo", "Vicente", "12345678A", "iñigo10@ejemplo.com");
         alumno.setEmail("iñigo10@ejemplo.com");
         alumno.setNumeroExpediente("EXP001");
 
@@ -52,7 +51,7 @@ class AlumnoRepositoryTest {
     @Test
     void testFindByDni() {
         // Given
-        Alumno alumno = new Alumno("Marco", "Sangalli", "87654321B");
+        Alumno alumno = new Alumno("Marco", "Sangalli", "87654321B", "marco10@ejemplo.com");
         em.getTransaction().begin();
         repository.save(alumno);
         em.getTransaction().commit();
@@ -68,7 +67,7 @@ class AlumnoRepositoryTest {
     @Test
     void testUpdateAlumno() {
         // Given
-        Alumno alumno = new Alumno("Pedro", "Munitis", "11111111C");
+        Alumno alumno = new Alumno("Pedro", "Munitis", "11111111C", "pedro10@ejemplo.com");
         em.getTransaction().begin();
         repository.save(alumno);
         em.getTransaction().commit();
@@ -89,7 +88,7 @@ class AlumnoRepositoryTest {
     @Test
     void testDeleteAlumno() {
         // Given
-        Alumno alumno = new Alumno("Jeremy", "Arevalo", "22222222D");
+        Alumno alumno = new Alumno("Jeremy", "Arevalo", "22222222D", "jeremy10@ejemplo.com");
         em.getTransaction().begin();
         repository.save(alumno);
         em.getTransaction().commit();
@@ -109,8 +108,8 @@ class AlumnoRepositoryTest {
     void testFindAll() {
         // Given
         em.getTransaction().begin();
-        repository.save(new Alumno("Gonzalo", "Colsa", "33333333E"));
-        repository.save(new Alumno("Óscar", "Serrano", "44444444F"));
+        repository.save(new Alumno("Gonzalo", "Colsa", "33333333E", "gonzalo10@ejemplo.com"));
+        repository.save(new Alumno("Óscar", "Serrano", "44444444F", "oscar10@ejemplo.com"));
         em.getTransaction().commit();
 
         // When
@@ -124,7 +123,7 @@ class AlumnoRepositoryTest {
     @Test
     void testFindByNombreCompleto() {
         // Given
-        Alumno alumno = new Alumno("Sergio", "Canales", "55555555G");
+        Alumno alumno = new Alumno("Sergio", "Canales", "55555555G", "sergio10@ejemplo.com");
         em.getTransaction().begin();
         repository.save(alumno);
         em.getTransaction().commit();

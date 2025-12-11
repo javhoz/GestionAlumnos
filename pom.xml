@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
+            <version>1.18.30</version>
         </dependency>
 
         <!-- TEST -->
@@ -58,6 +58,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
+
+		<!-- VAADIN -->
+		<dependency>
+    <groupId>com.vaadin</groupId>
+    <artifactId>vaadin-spring-boot-starter</artifactId>
+    <version>24.2.7</version> <!-- Replace with latest stable -->
+</dependency>
+
 
     </dependencies>
 
@@ -68,6 +76,19 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+			    <groupId>com.vaadin</groupId>
+			    <artifactId>vaadin-maven-plugin</artifactId>
+			    <version>24.2.7</version>
+			    <executions>
+			        <execution>
+			            <goals>
+			                <goal>prepare-frontend</goal>
+			                <goal>build-frontend</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			</plugin>
         </plugins>
     </build>
 

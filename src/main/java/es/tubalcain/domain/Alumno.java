@@ -82,11 +82,18 @@ public class Alumno {
 
     public Alumno() {}
 
-    public Alumno(String nombre, String apellidos, String dni) {
+    public Alumno(String nombre, String apellidos, String dni, String email) {
         this.nombre = nombre;
         this.apellidos = apellidos;
+        this.email = email;
         this.dni = dni;
     }
+    
+    public Alumno(String nombre, String email) {
+        this.nombre = nombre;
+        this.email = email;
+    }
+
 
     // Getters y setters
 
