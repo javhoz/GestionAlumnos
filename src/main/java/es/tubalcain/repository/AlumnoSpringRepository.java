@@ -34,6 +34,15 @@ public interface AlumnoSpringRepository extends JpaRepository<Alumno, Long> {
     // Buscar por módulo (relación ManyToMany)
     List<Alumno> findByModulosId(Long moduloId);
 
+    // Buscar por userId (propietario) - TODOS los métodos deben incluir userId para seguridad
+    List<Alumno> findByUserId(Long userId);
+    Page<Alumno> findByUserId(Long userId, Pageable pageable);
+    Optional<Alumno> findByIdAndUserId(Long id, Long userId);
+    Optional<Alumno> findByDniAndUserId(String dni, Long userId); // DNI filtrado por usuario
+    List<Alumno> findByUserIdAndActivoTrue(Long userId);
+    List<Alumno> findByUserIdAndNombreContainingIgnoreCase(Long userId, String nombre);
+    List<Alumno> findByUserIdAndApellidosContainingIgnoreCase(Long userId, String apellidos);
+
     // Paginación completa
     Page<Alumno> findAll(Pageable pageable);
 }

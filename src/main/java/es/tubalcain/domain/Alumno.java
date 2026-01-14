@@ -54,6 +54,11 @@ public class Alumno {
     @Column(name = "activo")
     private boolean activo = true;
 
+    // Relación con User (propietario)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) // clave foránea para el propietario
+    private User user;
+
     // Relación con Curso
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curso_id") // clave foránea en la tabla Alumno
@@ -129,6 +134,9 @@ public class Alumno {
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public Curso getCurso() { return curso; }
     public void setCurso(Curso curso) { this.curso = curso; }

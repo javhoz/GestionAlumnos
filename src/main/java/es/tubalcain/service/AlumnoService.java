@@ -1,7 +1,10 @@
 package es.tubalcain.service;
 
 import es.tubalcain.domain.Alumno;
+import es.tubalcain.domain.User;
+import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
+import es.tubalcain.security.UserContext;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,32 +17,46 @@ import java.util.List;
 public class AlumnoService {
 
     private final AlumnoSpringRepository alumnoRepository;
+    private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository, UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
+        this.userContext = userContext;
     }
 
-    // Crear alumno (validando DNI, tengo que explicar LN)
     @Transactional
     public Alumno crearAlumno(Alumno alumno) {
-        alumnoRepository.findByDni(alumno.getDni()).ifPresent(a -> {
-            throw new RuntimeException("Ya existe un alumno con ese DNI");
-        });
+        User currentUser = userContext.getCurrentUser();
+        Long userId = currentUser.getId();
+        
+        alumno.setUser(currentUser);
+
+        if (alumno.getDni() != null && !alumno.getDni().isEmpty()) {
+            alumnoRepository.findByDniAndUserId(alumno.getDni(), userId)
+                    .ifPresent(a -> {
+                        throw new RuntimeException("Ya existe un alumno con ese DNI para tu usuario");
+                    });
+        }
+        
         return alumnoRepository.save(alumno);
     }
 
-    // Listar todos
+
     public List<Alumno> listarTodos() {
-        return alumnoRepository.findAll();
+        Long userId = userContext.getCurrentUserId();
+        return alumnoRepository.findByUserId(userId);
     }
 
-    // Buscar por ID
+ 
     public Alumno buscarPorId(Long id) {
-        return alumnoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+        Long userId = userContext.getCurrentUserId();
+        
+        // Solo encontrar si pertenece al usuario actual
+        return alumnoRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new OwnershipException(
+                    "Alumno no encontrado o no tienes permiso para acceder a él"));
     }
 
-    // Actualizar alumno
     @Transactional
     public Alumno actualizarAlumno(Long id, Alumno alumnoActualizado) {
         Alumno alumno = buscarPorId(id);
@@ -51,39 +68,45 @@ public class AlumnoService {
         alumno.setDireccion(alumnoActualizado.getDireccion());
         alumno.setCursoActual(alumnoActualizado.getCursoActual());
         alumno.setActivo(alumnoActualizado.isActivo());
-
+        
         return alumnoRepository.save(alumno);
     }
 
-    // Borrado real
+
     @Transactional
     public void eliminarAlumno(Long id) {
-        alumnoRepository.deleteById(id);
+        Alumno alumno = buscarPorId(id);
+        
+        alumnoRepository.delete(alumno);
     }
 
-    // Desactivar alumno (borrado lógico)
+    // Borrado suave
     @Transactional
     public void desactivarAlumno(Long id) {
         Alumno alumno = buscarPorId(id);
+        
+        // Pasar a inactivo
         alumno.setActivo(false);
         alumnoRepository.save(alumno);
     }
 
-    // Búsquedas
     public List<Alumno> buscarPorNombre(String nombre) {
-        return alumnoRepository.findByNombreContainingIgnoreCase(nombre);
+        Long userId = userContext.getCurrentUserId();
+        return alumnoRepository.findByUserIdAndNombreContainingIgnoreCase(userId, nombre);
     }
 
     public List<Alumno> buscarPorApellidos(String apellidos) {
-        return alumnoRepository.findByApellidosContainingIgnoreCase(apellidos);
+        Long userId = userContext.getCurrentUserId();
+        return alumnoRepository.findByUserIdAndApellidosContainingIgnoreCase(userId, apellidos);
     }
 
     public List<Alumno> listarActivos() {
-        return alumnoRepository.findByActivoTrue();
+        Long userId = userContext.getCurrentUserId();
+        return alumnoRepository.findByUserIdAndActivoTrue(userId);
     }
 
-    // Paginación
     public Page<Alumno> listarPaginado(Pageable pageable) {
-        return alumnoRepository.findAll(pageable);
+        Long userId = userContext.getCurrentUserId();
+        return alumnoRepository.findByUserId(userId, pageable);
     }
 }
