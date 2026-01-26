@@ -36,7 +36,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.roles.add(Role.USER);
+        this.roles.add(Role.ALUMNO); // Default role is ALUMNO
+    }
+    
+    public User(String username, String password, String email, Role role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles.add(role);
     }
 
     // Getters and setters
@@ -89,6 +96,6 @@ public class User {
     }
 
     public enum Role {
-        USER, ADMIN
+        PROFESOR, ALUMNO
     }
 }

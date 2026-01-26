@@ -1,5 +1,6 @@
 package es.tubalcain.controller;
 
+import es.tubalcain.domain.User.Role;
 import es.tubalcain.dto.LoginRequest;
 import es.tubalcain.dto.RegisterRequest;
 import es.tubalcain.service.AuthService;
@@ -25,7 +26,9 @@ public class AuthController {
             Map<String, Object> response = authService.register(
                     request.getUsername(),
                     request.getPassword(),
-                    request.getEmail()
+                    request.getEmail(),
+                    // Anhadido por defecto para luego asignar rol en login
+                    Role.ALUMNO
             );
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {

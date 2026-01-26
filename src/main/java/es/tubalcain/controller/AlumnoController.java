@@ -7,6 +7,7 @@ import es.tubalcain.service.AlumnoService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class AlumnoController {
 
     // CREAR
     @PostMapping
+    @PreAuthorize("hasRole('PROFESOR')")
     public AlumnoDTO crear(@RequestBody AlumnoDTO alumnoDto) {
 
 //        Curso curso = alumnoService.buscarCursoPorId(alumnoDto.getCursoId());
@@ -60,12 +62,14 @@ public class AlumnoController {
     // BUSCAR POR ID
     @GetMapping("/{id}")
     public AlumnoDTO buscarPorId(@PathVariable Long id) {
+    	
         Alumno alumno = alumnoService.buscarPorId(id);
         return alumnoAssembler.toDTO(alumno);
     }
 
     // ACTUALIZAR
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESOR')")
     public AlumnoDTO actualizar(@PathVariable Long id, @RequestBody AlumnoDTO dto) {
 
         Alumno alumnoExistente = alumnoService.buscarPorId(id);
@@ -85,12 +89,14 @@ public class AlumnoController {
 
     // BORRADO REAL
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESOR')")
     public void eliminar(@PathVariable Long id) {
         alumnoService.eliminarAlumno(id);
     }
 
     // BORRADO LÓGICO
     @PutMapping("/desactivar/{id}")
+    @PreAuthorize("hasRole('PROFESOR')")
     public void desactivar(@PathVariable Long id) {
         alumnoService.desactivarAlumno(id);
     }

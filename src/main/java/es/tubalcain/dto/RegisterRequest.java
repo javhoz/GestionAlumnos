@@ -1,5 +1,6 @@
 package es.tubalcain.dto;
 
+import es.tubalcain.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,8 @@ public class RegisterRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
+    
+    private User.Role role; // Optional role, defaults to ALUMNO
 
     public RegisterRequest() {}
 
@@ -48,5 +51,13 @@ public class RegisterRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    public User.Role getRole() {
+        return role != null ? role : User.Role.ALUMNO; // Default to ALUMNO
+    }
+    
+    public void setRole(User.Role role) {
+        this.role = role;
     }
 }
