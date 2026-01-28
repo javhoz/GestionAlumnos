@@ -127,4 +127,10 @@ public class AlumnoController {
                 .map(alumnoAssembler::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @PostMapping("/alumno/{idAlumno}/documentacion")
+    public void subirDocumentacion(@PathVariable Long idAlumno, @RequestParam("file") String file) {
+        alumnoService.subirDocumentacion(idAlumno, file);
+    }
+
 }

@@ -4,6 +4,7 @@ import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.User;
 import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
+import es.tubalcain.repository.DocumentacionAlumnoRepository;
 import es.tubalcain.security.UserContext;
 
 import org.springframework.data.domain.Page;
@@ -18,10 +19,13 @@ import java.util.Set;
 public class AlumnoService {
 
     private final AlumnoSpringRepository alumnoRepository;
+        private final DocumentacionAlumnoRepository documentacionAlumnoRepository;
+
     private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository, UserContext userContext) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository, DocumentacionAlumnoRepository documentacionAlumnoRepository, UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
+        this.documentacionAlumnoRepository = documentacionAlumnoRepository;
         this.userContext = userContext;
     }
     
@@ -181,5 +185,11 @@ public class AlumnoService {
             Long userId = currentUser.getId();
             return alumnoRepository.findByUserId(userId, pageable);
         }
+    }
+
+    public void subirDocumentacion(Long idAlumno, String file) {
+        // buscarPorId already checks permissions based on role
+        Alumno alumno = buscarPorId(idAlumno);
+        // Lógica para subir y asociar la documentación al alumno
     }
 }
