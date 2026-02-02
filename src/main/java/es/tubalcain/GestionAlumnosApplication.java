@@ -20,7 +20,7 @@ public class GestionAlumnosApplication {
             System.out.println("\n================ ENDPOINTS DISPONIBLES ================\n");
 
             RequestMappingHandlerMapping mapping =
-                    context.getBean(RequestMappingHandlerMapping.class);
+                    context.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
 
             mapping.getHandlerMethods().forEach((info, method) -> {
                 System.out.println(

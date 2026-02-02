@@ -24,6 +24,7 @@
     <!-- JAVA 17 -->
     <properties>
         <java.version>17</java.version>
+        <spring.profiles.active>dev</spring.profiles.active>
     </properties>
 
     <dependencies>
@@ -103,6 +104,19 @@
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
+        <!-- ACTUATOR -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- H2 DATABASE (for dev/test) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <!-- PLUGIN DE ARRANQUE -->
@@ -111,6 +125,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <profiles>
+                        <profile>dev</profile>
+                    </profiles>
+                    <jvmArguments>
+                        -Dspring.profiles.active=dev
+                        -DDB_URL=jdbc:mysql://localhost:3306/gestion_alumnos
+                        -DDB_USERNAME=root
+                        -DDB_PASSWORD=root
+                    </jvmArguments>
+                </configuration>
             </plugin>
             <plugin>
 			    <groupId>com.vaadin</groupId>
@@ -127,5 +152,30 @@
 			</plugin>
         </plugins>
     </build>
+
+    <!-- MAVEN PROFILES -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <spring.profiles.active>test</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
