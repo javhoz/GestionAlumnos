@@ -13,8 +13,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "documentacion_alumno")
-public class DocumentacionAlumno {
+@Document(collection = "alumno_documentacion")
+public class AlumnoDocumentacion {
 
     @Id
     private String id;

@@ -4,7 +4,7 @@ import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.User;
 import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
-import es.tubalcain.repository.DocumentacionAlumnoRepository;
+import es.tubalcain.repository.AlumnoDocumentacionRepository;
 import es.tubalcain.security.UserContext;
 
 import org.springframework.data.domain.Page;
@@ -19,11 +19,11 @@ import java.util.Set;
 public class AlumnoService {
 
     private final AlumnoSpringRepository alumnoRepository;
-        private final DocumentacionAlumnoRepository documentacionAlumnoRepository;
+        private final AlumnoDocumentacionRepository documentacionAlumnoRepository;
 
     private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository, DocumentacionAlumnoRepository documentacionAlumnoRepository, UserContext userContext) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository, AlumnoDocumentacionRepository documentacionAlumnoRepository, UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
         this.documentacionAlumnoRepository = documentacionAlumnoRepository;
         this.userContext = userContext;
