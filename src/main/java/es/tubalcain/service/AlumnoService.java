@@ -4,7 +4,7 @@ import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.User;
 import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
-import es.tubalcain.repository.DocumentacionAlumnoRepository;
+import es.tubalcain.repository.AlumnoDocumentacionRepository;
 import es.tubalcain.security.UserContext;
 import es.tubalcain.domain.AlumnoDocumentacion;
 import es.tubalcain.domain.AlumnoDocumentacionCache;
@@ -28,14 +28,15 @@ public class AlumnoService {
     private static final Logger log = LoggerFactory.getLogger(AlumnoService.class);
 
     private final AlumnoSpringRepository alumnoRepository;
-        private final DocumentacionAlumnoRepository documentacionAlumnoRepository;
+        private final AlumnoDocumentacionRepository alumnoDocumentacionRepository;
+        //private final AlumnoDocumentacionCacheRepository alumnoDocumentacionRepository;
 
     private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository, DocumentacionAlumnoRepository documentacionAlumnoRepository, UserContext userContext) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository, AlumnoDocumentacionRepository alumnoDocumentacionRepository, UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
         this.alumnoDocumentacionRepository = alumnoDocumentacionRepository;
-        this.cacheRepository = cacheRepository;
+        //this.cacheRepository = cacheRepository;
         this.userContext = userContext;
     }
     
@@ -212,7 +213,7 @@ public class AlumnoService {
         alumnoDocumentacionRepository.save(doc);
 
         // Update Redis cache if available; tolerate connection failures
-        if (cacheRepository.isPresent()) {
+        /**if (cacheRepository.isPresent()) {
             try {
                 AlumnoDocumentacionCacheRepository repo = cacheRepository.get();
                 Optional<AlumnoDocumentacionCache> maybe = repo.findById(alumno.getId());
@@ -226,6 +227,6 @@ public class AlumnoService {
             }
         } else {
             log.debug("Redis cache repository not available; skipping cache update for alumno {}", idAlumno);
-        }
+        }**/
     }
 }
