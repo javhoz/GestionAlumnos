@@ -4,28 +4,42 @@ import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.User;
 import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
-import es.tubalcain.repository.DocumentacionAlumnoRepository;
+import es.tubalcain.repository.AlumnoDocumentacionRepository;
+import es.tubalcain.repository.AlumnoDocumentacionCacheRepository;
 import es.tubalcain.security.UserContext;
+import es.tubalcain.domain.AlumnoDocumentacion;
+import es.tubalcain.domain.AlumnoDocumentacionCache;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AlumnoService {
 
-    private final AlumnoSpringRepository alumnoRepository;
-        private final DocumentacionAlumnoRepository documentacionAlumnoRepository;
+    private static final Logger log = LoggerFactory.getLogger(AlumnoService.class);
 
+    private final AlumnoSpringRepository alumnoRepository;
+    private final AlumnoDocumentacionRepository alumnoDocumentacionRepository;
+    private final Optional<AlumnoDocumentacionCacheRepository> cacheRepository; // changed to Optional
     private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository, DocumentacionAlumnoRepository documentacionAlumnoRepository, UserContext userContext) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository,
+                        AlumnoDocumentacionRepository alumnoDocumentacionRepository,
+                        Optional<AlumnoDocumentacionCacheRepository> cacheRepository, // changed to Optional
+                        UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
-        this.documentacionAlumnoRepository = documentacionAlumnoRepository;
+        this.alumnoDocumentacionRepository = alumnoDocumentacionRepository;
+        this.cacheRepository = cacheRepository;
         this.userContext = userContext;
     }
     
@@ -187,9 +201,35 @@ public class AlumnoService {
         }
     }
 
-    public void subirDocumentacion(Long idAlumno, String file) {
+    @Transactional
+    public void subirDocumentacion(Long idAlumno, String filename, byte[] content) {
         // buscarPorId already checks permissions based on role
         Alumno alumno = buscarPorId(idAlumno);
-        // Lógica para subir y asociar la documentación al alumno
+
+        AlumnoDocumentacion doc = new AlumnoDocumentacion();
+        doc.setAlumnoId(alumno.getId());
+        doc.setFilename(filename);
+        doc.setContent(content);
+        doc.setUploadedById(userContext.getCurrentUser().getId());
+        doc.setUploadedAt(Instant.now());
+
+        alumnoDocumentacionRepository.save(doc);
+
+        // Update Redis cache if available; tolerate connection failures
+        if (cacheRepository.isPresent()) {
+            try {
+                AlumnoDocumentacionCacheRepository repo = cacheRepository.get();
+                Optional<AlumnoDocumentacionCache> maybe = repo.findById(alumno.getId());
+                AlumnoDocumentacionCache cache = maybe.orElseGet(() -> new AlumnoDocumentacionCache(alumno.getId(), 0, null));
+                cache.setDocumentCount(cache.getDocumentCount() + 1);
+                cache.setLastUploadedAt(Instant.now());
+                repo.save(cache);
+            } catch (Exception e) {
+                // likely Redis connection failure; log and continue
+                log.warn("Could not update Redis cache for alumno {} — skipping cache update: {}", idAlumno, e.getMessage());
+            }
+        } else {
+            log.debug("Redis cache repository not available; skipping cache update for alumno {}", idAlumno);
+        }
     }
 }

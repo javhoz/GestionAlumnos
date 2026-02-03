@@ -9,11 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.io.IOException;
 
-@RestController
+@RestController("alumnoController") // changed: explicit unique bean name to avoid conflict
 @RequestMapping("/api/alumnos")
 @CrossOrigin(origins = "*")
 public class AlumnoController {
@@ -128,9 +132,11 @@ public class AlumnoController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/alumno/{idAlumno}/documentacion")
-    public void subirDocumentacion(@PathVariable Long idAlumno, @RequestParam("file") String file) {
-        alumnoService.subirDocumentacion(idAlumno, file);
+    @PostMapping("/{idAlumno}/documentacion")
+    public ResponseEntity<Void> subirDocumentacion(@PathVariable Long idAlumno,
+                                                   @RequestParam("file") MultipartFile file) throws IOException {
+        alumnoService.subirDocumentacion(idAlumno, file.getOriginalFilename(), file.getBytes());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

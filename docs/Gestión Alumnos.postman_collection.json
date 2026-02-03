@@ -215,7 +215,39 @@
 				}
 			},
 			"response": []
-		}
+		},
+		 {
+      "name": "Subir Documentacion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "{{filePath}}"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/alumnos/{{alumnoId}}/documentacion",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","alumnos","{{alumnoId}}","documentacion"],
+          "variable": [
+            { "key": "alumnoId", "value": "{{alumnoId}}" }
+          ]
+        }
+      },
+      "response": []
+    }
 	],
 	"variable": [
 		{

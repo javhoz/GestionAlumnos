@@ -23,7 +23,11 @@
 
     <!-- JAVA 17 -->
     <properties>
+        <!-- set project Java version to 17 -->
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
     <dependencies>
@@ -59,13 +63,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
-		<!-- VAADIN -->
-		<dependency>
-    <groupId>com.vaadin</groupId>
-    <artifactId>vaadin-spring-boot-starter</artifactId>
-    <version>24.2.7</version> <!-- Replace with latest stable -->
-</dependency>
-
 		<!-- SPRING SECURITY -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -78,12 +75,14 @@
 			<artifactId>jjwt-api</artifactId>
 			<version>0.12.3</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.12.3</version>
 			<scope>runtime</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
@@ -103,6 +102,19 @@
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
+        <!-- REDIS -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        
+        <!-- VAADIN -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring-boot-starter</artifactId>
+            <version>24.7.2</version>
+        </dependency>
+
     </dependencies>
 
     <!-- PLUGIN DE ARRANQUE -->
@@ -112,19 +124,43 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- ensure compiler plugin uses Java 17 -->
             <plugin>
-			    <groupId>com.vaadin</groupId>
-			    <artifactId>vaadin-maven-plugin</artifactId>
-			    <version>24.2.7</version>
-			    <executions>
-			        <execution>
-			            <goals>
-			                <goal>prepare-frontend</goal>
-			                <goal>build-frontend</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.10.1</version>
+              <configuration>
+                <release>17</release>
+              </configuration>
+            </plugin>
+
+            <!-- fail early with a clear message if Java runtime is older than 17 -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <version>3.2.1</version>
+              <executions>
+                <execution>
+                  <id>enforce-java</id>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                    <rules>
+                      <requireJavaVersion>
+                        <version>[17,)</version>
+                        <message>
+                          Java 17 or newer is required to build this project (Vaadin plugin requires JDK 17).
+                          Install JDK 17 and set JAVA_HOME to that JDK, then run mvn -v to verify.
+                        </message>
+                      </requireJavaVersion>
+                    </rules>
+                    <fail>true</fail>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
         </plugins>
     </build>
 
