@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: dev
+  
+  application:
+    name: GestionAlumnos
+  
+  # Server Configuration
+  server:
+    port: 8080
+    servlet:
+      context-path: /
+  
+  # Logging Configuration
+  logging:
+    level:
+      root: INFO
+      es.tubalcain: DEBUG
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+      file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# JWT Configuration
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationAndValidationMustBeAtLeast256BitsLongForSecurity
+  expiration: 86400000
+
+# Vaadin Configuration
+vaadin:
+  allowedOrigins: http://localhost:8080,http://localhost:3000

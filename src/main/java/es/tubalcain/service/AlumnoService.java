@@ -4,8 +4,7 @@ import es.tubalcain.domain.Alumno;
 import es.tubalcain.domain.User;
 import es.tubalcain.exception.OwnershipException;
 import es.tubalcain.repository.AlumnoSpringRepository;
-import es.tubalcain.repository.AlumnoDocumentacionRepository;
-import es.tubalcain.repository.AlumnoDocumentacionCacheRepository;
+import es.tubalcain.repository.DocumentacionAlumnoRepository;
 import es.tubalcain.security.UserContext;
 import es.tubalcain.domain.AlumnoDocumentacion;
 import es.tubalcain.domain.AlumnoDocumentacionCache;
@@ -29,14 +28,11 @@ public class AlumnoService {
     private static final Logger log = LoggerFactory.getLogger(AlumnoService.class);
 
     private final AlumnoSpringRepository alumnoRepository;
-    private final AlumnoDocumentacionRepository alumnoDocumentacionRepository;
-    private final Optional<AlumnoDocumentacionCacheRepository> cacheRepository; // changed to Optional
+        private final DocumentacionAlumnoRepository documentacionAlumnoRepository;
+
     private final UserContext userContext;
 
-    public AlumnoService(AlumnoSpringRepository alumnoRepository,
-                        AlumnoDocumentacionRepository alumnoDocumentacionRepository,
-                        Optional<AlumnoDocumentacionCacheRepository> cacheRepository, // changed to Optional
-                        UserContext userContext) {
+    public AlumnoService(AlumnoSpringRepository alumnoRepository, DocumentacionAlumnoRepository documentacionAlumnoRepository, UserContext userContext) {
         this.alumnoRepository = alumnoRepository;
         this.alumnoDocumentacionRepository = alumnoDocumentacionRepository;
         this.cacheRepository = cacheRepository;

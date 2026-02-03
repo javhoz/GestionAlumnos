@@ -3,10 +3,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     
-    <persistence-unit name="gestionAlumnosTest" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="gestionAlumnosTestPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <class>es.tubalcain.domain.Alumno</class>
         <class>es.tubalcain.domain.Curso</class>
         <class>es.tubalcain.domain.Modulo</class>
+        <class>es.tubalcain.domain.User</class>
         
         <properties>
             <!-- Configuración de H2 en memoria para tests -->

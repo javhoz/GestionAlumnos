@@ -5,7 +5,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection = "documentacion_alumnos")
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Document(collection = "alumno_documentacion")
 public class AlumnoDocumentacion {
 
     @Id
