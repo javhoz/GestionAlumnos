@@ -23,6 +23,7 @@ spring:
   # Server Configuration
   server:
     port: 8080
+    address: 0.0.0.0  # Allow access from local network
     servlet:
       context-path: /
       multipart:
@@ -45,5 +46,5 @@ jwt:
 
 # Vaadin Configuration
 vaadin:
-  allowedOrigins: http://localhost:8080,http://localhost:3000
+  allowedOrigins: http://localhost:8080,http://localhost:3000,http://0.0.0.0:8080
   productionMode: true
